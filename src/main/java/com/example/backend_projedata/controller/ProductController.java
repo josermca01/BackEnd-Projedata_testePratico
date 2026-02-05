@@ -16,10 +16,8 @@ import com.example.backend_projedata.model.Product;
 import com.example.backend_projedata.model.ProductDTO;
 import com.example.backend_projedata.service.ProductService;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 

@@ -12,7 +12,6 @@ import com.example.backend_projedata.model.Product;
 import com.example.backend_projedata.model.ProductDTO;
 import com.example.backend_projedata.repository.ProductRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 @Service
 public class ProductService {
     @Autowired
@@ -43,7 +42,7 @@ public class ProductService {
             
         } catch (Exception e) {
             // TODO: handle exception
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Erro na criacao do perfil");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Error creating object");
         }
     }
     public ProductDTO update(Long id, ProductDTO update) {
