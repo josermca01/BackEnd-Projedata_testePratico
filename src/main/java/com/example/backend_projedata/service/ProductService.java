@@ -61,4 +61,9 @@ public class ProductService {
         return new ProductDTO(entity.getName(),entity.getValue());
         
     }
+    public void delete(Long id){
+        Optional<Product> op = repository.findById(id);
+        op.orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found"));
+        repository.deleteById(id);
+    }
 }
