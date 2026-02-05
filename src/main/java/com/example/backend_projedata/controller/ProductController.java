@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -32,6 +34,12 @@ public class ProductController {
         List <Product> list= productService.getProducts();
         return ResponseEntity.ok().body(list);
     }
+    @GetMapping("{id}")
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
+        ProductDTO dto = productService.getProductById(id);
+        return ResponseEntity.ok().body(dto);
+    }
+    
     @PostMapping
     public ResponseEntity<Product> postMethodName(@ModelAttribute ProductDTO productDTO) {
         //TODO: process POST request
@@ -39,11 +47,11 @@ public class ProductController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(product.getId()).toUri();
         return ResponseEntity.created(uri).body(product);
     }
-    @PutMapping("path/{id}")
-    public String putMethodName(@PathVariable String id, @RequestBody String entity) {
+    @PutMapping("{id}")
+    public ResponseEntity<ProductDTO> update(@ModelAttribute ProductDTO update, @PathVariable Long id) {
         //TODO: process PUT request
-        
-        return entity;
+        ProductDTO dto = productService.update(id,update);
+        return ResponseEntity.ok().body(dto);
     }
 
 }
