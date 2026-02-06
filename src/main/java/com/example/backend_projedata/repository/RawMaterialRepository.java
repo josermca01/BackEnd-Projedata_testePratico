@@ -12,4 +12,5 @@ import com.example.backend_projedata.model.RawMaterial;
 public interface RawMaterialRepository extends JpaRepository<RawMaterial,Long>{
     @Query("SELECT r FROM Raw_Materials r ORDER BY r.id ASC")
     List<RawMaterial> getRawMaterials();
+    List<RawMaterial> findByName(String name);
 }

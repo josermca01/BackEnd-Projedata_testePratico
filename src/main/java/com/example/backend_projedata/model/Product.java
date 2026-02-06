@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +32,7 @@ public class Product implements Serializable{
     private String name;
     private double value;
 
-    @OneToMany(mappedBy = "product_id")
+    @OneToMany(mappedBy = "product")
     @JsonIgnore
     Set<ProductComposition> composition;
 

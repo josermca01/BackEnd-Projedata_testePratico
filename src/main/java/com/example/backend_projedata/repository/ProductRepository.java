@@ -12,4 +12,6 @@ import com.example.backend_projedata.model.Product;
 public interface ProductRepository extends JpaRepository<Product,Long>{
     @Query("SELECT p FROM Products p ORDER BY p.id ASC")
     List<Product> getProducts();
+
+    List<Product> findByName(String name);
 }

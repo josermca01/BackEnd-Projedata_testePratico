@@ -2,7 +2,6 @@ package com.example.backend_projedata.model;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,11 +31,11 @@ public class ProductComposition implements Serializable{
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private Product product_id;
+    private Product product;
 
     @ManyToOne
     @JoinColumn(name = "raw_material_id")
-    private RawMaterial raw_material_id;
+    private RawMaterial raw_material;
 
     private double quantity_required;
 

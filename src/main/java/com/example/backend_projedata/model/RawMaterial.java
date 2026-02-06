@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +32,7 @@ public class RawMaterial implements Serializable{
     private String name;
     private Long stock_quantity;
     
-    @OneToMany(mappedBy = "raw_material_id")
+    @OneToMany(mappedBy = "raw_material")
     @JsonIgnore
     Set<ProductComposition> composition;
 
