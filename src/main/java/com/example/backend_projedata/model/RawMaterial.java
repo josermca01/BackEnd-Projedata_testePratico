@@ -1,11 +1,16 @@
 package com.example.backend_projedata.model;
 
 import java.io.Serializable;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,4 +32,9 @@ public class RawMaterial implements Serializable{
     private Long id;
     private String name;
     private Long stock_quantity;
+    
+    @OneToMany(mappedBy = "raw_material_id")
+    @JsonIgnore
+    Set<ProductComposition> composition;
+
 }

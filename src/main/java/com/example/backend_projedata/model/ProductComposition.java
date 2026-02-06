@@ -1,16 +1,15 @@
 package com.example.backend_projedata.model;
 
 import java.io.Serializable;
-import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,20 +20,24 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "Products")
-@Table(name = "products",schema="public")
-public class Product implements Serializable{
+@Entity(name = "Product_Composition")
+@Table(name = "product_composition",schema="public")
+public class ProductComposition implements Serializable{
     
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private double value;
 
-    @OneToMany(mappedBy = "product_id")
-    @JsonIgnore
-    Set<ProductComposition> composition;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product_id;
+
+    @ManyToOne
+    @JoinColumn(name = "raw_material_id")
+    private RawMaterial raw_material_id;
+
+    private double quantity_required;
 
 }

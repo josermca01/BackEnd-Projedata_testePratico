@@ -10,6 +10,6 @@ import com.example.backend_projedata.model.RawMaterial;
 
 @Repository
 public interface RawMaterialRepository extends JpaRepository<RawMaterial,Long>{
-    @Query("SELECT r FROM Raw_Materials r")
+    @Query("SELECT r FROM Raw_Materials r ORDER BY r.id ASC")
     List<RawMaterial> getRawMaterials();
 }

@@ -48,8 +48,8 @@ public class RawMaterialService {
     public RawMaterialDTO update(Long id, RawMaterialDTO update) {
         Optional<RawMaterial> op = repository.findById(id);
         RawMaterial entity = op.orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"RawMaterial not found"));
-        for (RawMaterial product : repository.findAll()) {
-            if(update.name().equalsIgnoreCase(product.getName())){
+        for (RawMaterial material : repository.findAll()) {
+            if(update.name().equalsIgnoreCase(material.getName())){
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "Name invalid or already in the system!");
             }
