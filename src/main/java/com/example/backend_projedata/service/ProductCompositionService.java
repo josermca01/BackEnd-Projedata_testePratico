@@ -60,23 +60,28 @@ public class ProductCompositionService {
     }
     public ProductComposition update(ProductCompositionResponseDTO componentes,Long id){
         try{
-        List<Product> product = productRepository.findByName(componentes.product());
-        List<RawMaterial> rawmaterial = rawMaterialRepository.findByName(componentes.rawMaterial());
+        Product product = productRepository.findByName(componentes.product()).getFirst();
+        RawMaterial rawmaterial = rawMaterialRepository.findByName(componentes.rawMaterial()).getFirst();
         ProductComposition entity = repository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Composition not found"));
         for (ProductComposition composition : repository.findAll()) {
-            if(product.getFirst().equals(composition.getProduct()) && rawmaterial.getFirst().equals(composition.getRaw_material())&&componentes.quantity_required()==composition.getQuantity_required()){
-                repository.delete(entity);
-                return entity;
+            if(product.equals(composition.getProduct()) && rawmaterial.equals(composition.getRaw_material())&&componentes.quantity_required()==composition.getQuantity_required()){
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "already in the system!");
             }
         }
-        entity.setProduct(product.getFirst());
-        entity.setRaw_material(rawmaterial.getFirst());
+        entity.setProduct(product);
+        entity.setRaw_material(rawmaterial);
         entity.setQuantity_required(componentes.quantity_required());
         return repository.save(entity);
     }
         catch (Exception e) {
             // TODO: handle exception
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Error creating object");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Error updating object");
         }
+    }
+    public void delete(Long id){
+        Optional<ProductComposition> op = repository.findById(id);
+        op.orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found"));
+        repository.deleteById(id);
     }
 }

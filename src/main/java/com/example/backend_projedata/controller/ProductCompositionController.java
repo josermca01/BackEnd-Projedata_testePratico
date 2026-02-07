@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,10 +45,15 @@ public class ProductCompositionController {
         return ResponseEntity.created(uri).body(composition);
     }
     @PutMapping("{id}")
-    public ResponseEntity<ProductComposition> update(@ModelAttribute ProductCompositionResponseDTO compositionDTO) {
-        //TODO: process POST request
-        ProductComposition composition = service.postComposition(compositionDTO);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(composition.getId()).toUri();
-        return ResponseEntity.created(uri).body(composition);
+    public ResponseEntity<ProductComposition> update(@PathVariable Long id,@ModelAttribute ProductCompositionResponseDTO compositionDTO) {
+        //TODO: process PUT request
+        ProductComposition composition = service.update(compositionDTO,id);
+        return ResponseEntity.ok().body(composition);
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity<ProductComposition> delete(@PathVariable Long id) {
+        //TODO: process DELETE request
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
