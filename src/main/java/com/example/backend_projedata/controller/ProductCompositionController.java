@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -37,6 +38,13 @@ public class ProductCompositionController {
     
     @PostMapping
     public ResponseEntity<ProductComposition> postMethodName(@ModelAttribute ProductCompositionResponseDTO compositionDTO) {
+        //TODO: process POST request
+        ProductComposition composition = service.postComposition(compositionDTO);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(composition.getId()).toUri();
+        return ResponseEntity.created(uri).body(composition);
+    }
+    @PutMapping("{id}")
+    public ResponseEntity<ProductComposition> update(@ModelAttribute ProductCompositionResponseDTO compositionDTO) {
         //TODO: process POST request
         ProductComposition composition = service.postComposition(compositionDTO);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(composition.getId()).toUri();
