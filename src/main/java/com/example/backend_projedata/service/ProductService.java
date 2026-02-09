@@ -1,23 +1,34 @@
 package com.example.backend_projedata.service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
+import com.example.backend_projedata.model.*;
+import com.example.backend_projedata.repository.ProductCompositionRepository;
+import com.example.backend_projedata.repository.RawMaterialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.backend_projedata.model.Product;
-import com.example.backend_projedata.model.ProductDTO;
 import com.example.backend_projedata.repository.ProductRepository;
 
 @Service
 public class ProductService {
     @Autowired
     private ProductRepository repository;
-    public List<Product> getProducts(){
-        List<Product> products = repository.getProducts();
+    @Autowired
+    private ProductCompositionRepository compositionRepository;
+    @Autowired
+    private RawMaterialRepository materialRepository;
+    public List<ProductDTOGetAllResponse> getProducts(){
+        List<ProductDTOGetAllResponse> products = new ArrayList<>();
+        for (Product product : repository.getProducts()) {
+            Set<RawMaterialCompositionDTO> materials = new HashSet<>();
+            for (ProductComposition composition : product.getComposition())
+                materials.add(new RawMaterialCompositionDTO(composition.getRaw_material().getName(),composition.getRaw_material().getStock_quantity(),composition.getQuantity_required()));
+            products.add(new ProductDTOGetAllResponse(product.getName(),product.getValue(),materials));
+        }
+
         return products;
     }
     public ProductDTO getProductById(Long id){
@@ -26,26 +37,41 @@ public class ProductService {
         ProductDTO productDTO = new ProductDTO(product.getName(), product.getValue());
         return productDTO;
     }
-    public Product postProduct(ProductDTO dto){
+    public Product postProduct(ProductDTOGetAllResponse dto){
         for (Product product : repository.findAll()) {
             if(dto.name().equalsIgnoreCase(product.getName())){
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "Name invalid or already in the system!");
             }
         }
+        System.out.println(dto);
         try {
         Product product = new Product();
         product.setName(dto.name());
         product.setValue(dto.value());
-        return repository.save(product);
-         
-            
+        repository.save(product);
+        SetProductComposition(dto.materials(),product);
+        return product;
         } catch (Exception e) {
             // TODO: handle exception
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Error creating object");
+            throw new RuntimeException(e);
         }
     }
-    public ProductDTO update(Long id, ProductDTO update) {
+    public void SetProductComposition(Set<RawMaterialCompositionDTO> materials,Product product){
+        for (RawMaterialCompositionDTO matDTO: materials){
+            ProductComposition composition = new ProductComposition();
+            composition.setProduct(product);
+            composition.setRaw_material(materialRepository.findByName(matDTO.name()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Composition not found")));
+            composition.setQuantity_required(matDTO.quantity_required());
+            compositionRepository.save(composition);
+        }
+    }
+    public void UpdateProductComposition(Set<RawMaterialCompositionDTO> materials,Product product){
+        Long numberOfMaterials = compositionRepository.CountByProductId(product.getId());
+            compositionRepository.deleteAll(compositionRepository.findByProductId(product.getId()));
+            SetProductComposition(materials,product);
+    }
+    public ProductDTO update(Long id, ProductDTOGetAllResponse update) {
         Optional<Product> op = repository.findById(id);
         Product entity = op.orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found"));
         for (Product product : repository.findAll()) {
@@ -54,6 +80,7 @@ public class ProductService {
                     "Name invalid or already in the system!");
             }
         }
+        UpdateProductComposition(update.materials(),entity);
         entity.setName(update.name());
         entity.setValue(update.value());
         entity = repository.save(entity);

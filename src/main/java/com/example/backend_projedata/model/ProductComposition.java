@@ -37,6 +37,6 @@ public class ProductComposition implements Serializable{
     @JoinColumn(name = "raw_material_id")
     private RawMaterial raw_material;
 
-    private double quantity_required;
+    private Long quantity_required;
 
 }
