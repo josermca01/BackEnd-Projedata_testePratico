@@ -14,15 +14,16 @@ public interface ProductCompositionRepository extends JpaRepository<ProductCompo
     @Query("SELECT p FROM Product_Composition p ORDER BY p.id ASC")
     List<ProductComposition> getProductCompositions();
     @Query("""
-       SELECT COUNT(pc)
-       FROM Product_Composition pc
-       WHERE pc.product.id = :productId
-       """)
-    Long CountByProductId(@Param("productId") Long productId);
-    @Query("""
        SELECT pc
        FROM Product_Composition pc
        WHERE pc.product.id = :productId
        """)
     List<ProductComposition> findByProductId(@Param("productId") Long productId);
+    @Query("""
+       SELECT pc
+       FROM Product_Composition pc
+       WHERE pc.product.id = :productId
+       AND pc.raw_material.id = :materialId
+       """)
+    ProductComposition findByProductIdAndName(@Param("productId") Long productId,@Param("materialId") Long materialId);
 }

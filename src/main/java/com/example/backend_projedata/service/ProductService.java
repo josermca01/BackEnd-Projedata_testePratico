@@ -66,10 +66,26 @@ public class ProductService {
             compositionRepository.save(composition);
         }
     }
-    public void UpdateProductComposition(Set<RawMaterialCompositionDTO> materials,Product product){
-        Long numberOfMaterials = compositionRepository.CountByProductId(product.getId());
-            compositionRepository.deleteAll(compositionRepository.findByProductId(product.getId()));
-            SetProductComposition(materials,product);
+    public Set<ProductComposition> UpdateProductComposition(Set<RawMaterialCompositionDTO> materials,Product product){
+        Set<ProductComposition> compositionSet = new HashSet<>();
+        List<ProductComposition> composition = new ArrayList<>( product.getComposition().stream().toList());
+        while (composition.size()<materials.size()) {
+            composition.add(new ProductComposition());
+        }
+        while (composition.size()>materials.size()) {
+            compositionRepository.delete(composition.removeLast());
+        }
+        int i=0;
+        for (RawMaterialCompositionDTO matDTO: materials){
+            RawMaterial material = materialRepository.findByName(matDTO.name()).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Composition not found"));
+            composition.get(i).setProduct(product);
+            composition.get(i).setRaw_material(material);
+            composition.get(i).setQuantity_required(matDTO.quantity_required());
+            compositionRepository.save(composition.get(i));
+            compositionSet.add(composition.get(i));
+            i++;
+        }
+        return compositionSet;
     }
     public ProductDTO update(Long id, ProductDTOGetAllResponse update) {
         Optional<Product> op = repository.findById(id);
@@ -80,7 +96,7 @@ public class ProductService {
                     "Name invalid or already in the system!");
             }
         }
-        UpdateProductComposition(update.materials(),entity);
+        entity.setComposition(UpdateProductComposition(update.materials(),entity));
         entity.setName(update.name());
         entity.setValue(update.value());
         entity = repository.save(entity);
