@@ -1,11 +1,11 @@
 RUN apt-get update
-RUN apt-get install openjdk-21-jdk -y
+RUN apt-get install openjdk-17-jdk -y
 COPY . .
 
 RUN apt-get install maven -y
 RUN mvn clean install
 
-FROM eclipse-temurin:8u482-b08-jdk-alpine-3.21
+FROM eclipse-temurin:17-jdk
 
 EXPOSE 8080
 
