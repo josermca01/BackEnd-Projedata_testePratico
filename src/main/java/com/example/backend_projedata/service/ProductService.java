@@ -38,13 +38,13 @@ public class ProductService {
         return productDTO;
     }
     public Product postProduct(ProductDTOGetAllResponse dto){
+        if (!repository.findAll().isEmpty()){
         for (Product product : repository.findAll()) {
             if(dto.name().equalsIgnoreCase(product.getName())){
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "Name invalid or already in the system!");
             }
-        }
-        System.out.println(dto);
+        }}
         try {
         Product product = new Product();
         product.setName(dto.name());

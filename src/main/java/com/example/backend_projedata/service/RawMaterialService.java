@@ -29,12 +29,13 @@ public class RawMaterialService {
         return materialDTO;
     }
     public RawMaterial postRawMaterial(RawMaterialDTO dto){
+        if (!repository.findAll().isEmpty()){
         for (RawMaterial material : repository.findAll()) {
             if(dto.name().equalsIgnoreCase(material.getName())){
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN,
                     "Name invalid or already in the system!");
             }
-        }
+        }}
         try {
         RawMaterial material = new RawMaterial();
         material.setName(dto.name());
